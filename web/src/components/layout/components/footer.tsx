@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStatus } from '@/hooks/use-status'
 import { useSystemConfig } from '@/hooks/use-system-config'
+import { BRAND_DISPLAY_NAME, BRAND_LOCKUP, DEFAULT_LOGO } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 interface FooterLink {
@@ -151,15 +152,10 @@ function ProjectAttribution(props: { currentYear: number; inline?: boolean }) {
 
 export function Footer(props: FooterProps) {
   const { t } = useTranslation()
-  const {
-    systemName,
-    logo: systemLogo,
-    footerHtml,
-    demoSiteEnabled,
-  } = useSystemConfig()
+  const { logo: systemLogo, footerHtml, demoSiteEnabled } = useSystemConfig()
 
   const displayLogo = systemLogo || props.logo || '/logo.png'
-  const displayName = systemName || props.name || 'New API'
+  const displayName = BRAND_DISPLAY_NAME
   const isDemoSiteMode = Boolean(demoSiteEnabled)
   const currentYear = new Date().getFullYear()
 
@@ -256,9 +252,12 @@ export function Footer(props: FooterProps) {
           <div className='shrink-0'>
             <Link to='/' className='group flex items-center gap-2.5'>
               <img
-                src={displayLogo}
+                src={displayLogo === DEFAULT_LOGO ? BRAND_LOCKUP : displayLogo}
                 alt={displayName}
-                className='size-7 rounded-lg object-contain'
+                className={cn(
+                  'rounded-lg object-contain motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.08] motion-safe:group-focus-visible:scale-[1.08]',
+                  displayLogo === DEFAULT_LOGO ? 'h-16 w-11' : 'size-7'
+                )}
               />
               <span className='text-sm font-semibold tracking-tight'>
                 {displayName}

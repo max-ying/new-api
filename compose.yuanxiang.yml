@@ -1,0 +1,22 @@
+services:
+  yuanxiang:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        HTTP_PROXY: http://192.168.13.1:7881
+        HTTPS_PROXY: http://192.168.13.1:7881
+        http_proxy: http://192.168.13.1:7881
+        https_proxy: http://192.168.13.1:7881
+    image: yuanxiang-local:latest
+    container_name: yuanxiang-local
+    restart: unless-stopped
+    ports:
+      - "192.168.13.128:3005:3000"
+    env_file:
+      - .env.yuanxiang
+    environment:
+      TZ: Asia/Shanghai
+      FRONTEND_BASE_URL: http://192.168.13.128:3005
+    volumes:
+      - ./data:/data

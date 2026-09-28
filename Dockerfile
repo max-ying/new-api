@@ -9,7 +9,7 @@ ARG GIT_COMMIT=
 
 WORKDIR /build/web
 COPY web/package.json web/bun.lock ./
-RUN bun install --frozen-lockfile --registry "${NPM_CONFIG_REGISTRY}"
+RUN bun install --frozen-lockfile --network-concurrency=4 --no-cache
 COPY ./web ./
 COPY ./VERSION /build/VERSION
 RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=${VERSION:-$(cat /build/VERSION)} bun run build

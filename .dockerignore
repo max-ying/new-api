@@ -10,3 +10,8 @@ docs
 /web/node_modules
 /web/dist
 !THIRD-PARTY-LICENSES.md
+
+# Keep local secrets and SQLite data out of build layers.
+.env*
+/data/
+/logs/
