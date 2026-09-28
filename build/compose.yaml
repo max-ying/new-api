@@ -29,6 +29,10 @@ services:
       - new-api-logs:/app/logs
     environment:
       TZ: ${TZ:-Asia/Shanghai}
+      SQL_DSN: postgresql://new-api:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/new-api?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
       interval: 30s
@@ -41,6 +45,22 @@ services:
     cap_drop:
       - ALL
 
+  postgres:
+    image: ${POSTGRES_IMAGE:-docker.m.daocloud.io/library/postgres:17-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: new-api
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: new-api
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U new-api -d new-api"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 volumes:
   new-api-data:
   new-api-logs:
+  pg-data:

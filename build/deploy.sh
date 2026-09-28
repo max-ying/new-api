@@ -24,7 +24,11 @@ fi
 if [ -z "${SOURCE_URL:-}" ]; then
     SOURCE_URL=$(git remote get-url origin 2>/dev/null || true)
 fi
-export NEW_API_VERSION GIT_COMMIT BUILD_DATE SOURCE_URL
+if [ -z "${POSTGRES_PASSWORD:-}" ]; then
+    echo "POSTGRES_PASSWORD is empty. Set it in build/.env, then run this script again." >&2
+    exit 1
+fi
+export NEW_API_VERSION GIT_COMMIT BUILD_DATE SOURCE_URL POSTGRES_PASSWORD
 
 command=${1:-deploy}
 shift || true

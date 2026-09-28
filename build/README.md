@@ -110,14 +110,17 @@ SQL_DSN=postgresql://user:password@host:5432/new-api
 REDIS_CONN_STRING=redis://default:password@host:6379
 ```
 
-默认不配置数据库和 Redis 时，应用使用 SQLite。
+当前部署默认使用 PostgreSQL，服务名是 `postgres`，数据库名、用户名都是 `new-api`。
+
+`POSTGRES_PASSWORD` 必须在 `build/.env` 中设置。脚本不会自动生成或修改密码，避免重复部署时数据库密码变化导致 PostgreSQL 卷仍使用旧密码。
 
 ## 数据和日志
 
 默认使用 Docker 命名卷：
 
-- `new-api-build_new-api-data`：SQLite 数据和上传数据
+- `new-api-build_new-api-data`：上传数据
 - `new-api-build_new-api-logs`：应用日志
+- `new-api-build_pg-data`：PostgreSQL 数据
 
 删除容器不会删除这些数据。
 
@@ -159,7 +162,7 @@ REDIS_CONN_STRING=redis://default:password@host:6379
 ./build/deploy.sh down
 ```
 
-清空 SQLite 数据、日志，并删除容器：
+清空 PostgreSQL 数据、日志，并删除容器：
 
 ```sh
 ./build/deploy.sh reset-data
