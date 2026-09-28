@@ -23,6 +23,13 @@ For commercial licensing, please contact support@quantumnous.com
 // System Configuration Defaults
 export const DEFAULT_SYSTEM_NAME = 'New API'
 export const DEFAULT_LOGO = '/logo.png'
+export const BRAND_LOCKUP = '/yuanxiang-lockup.png'
+export const BRAND_DISPLAY_NAME = '元相智算token宇宙'
+
+// Customer-facing co-branding keeps the upstream project identity intact while
+// presenting the deployment as 元相智算.
+export const BRAND_NAME = '元相智算'
+export const BRAND_TAGLINE = 'token 宇宙'
 
 // LocalStorage Keys
 export const STORAGE_KEYS = {

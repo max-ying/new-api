@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useStatus } from '@/hooks/use-status'
 import { useSystemConfig } from '@/hooks/use-system-config'
+import { BRAND_NAME, BRAND_TAGLINE } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 type SystemBrandProps = {
@@ -52,8 +53,6 @@ export function SystemBrand(props: SystemBrandProps) {
 
   const variant = props.variant ?? 'sidebar'
   const name = status?.system_name || props.defaultName || 'New API'
-  const version =
-    status?.version || props.defaultVersion || t('Unknown version')
 
   if (variant === 'inline') {
     return (
@@ -61,18 +60,18 @@ export function SystemBrand(props: SystemBrandProps) {
         to='/'
         aria-label={t('Go to home')}
         className={cn(
-          'text-foreground inline-flex h-7 min-w-0 items-center gap-1.5 rounded-md px-1.5 text-sm font-medium transition-colors outline-none select-none',
+          'group text-foreground inline-flex h-7 min-w-0 items-center gap-1.5 rounded-md px-1.5 text-sm font-medium transition-colors outline-none select-none',
           'hover:bg-accent focus-visible:ring-ring/40 focus-visible:ring-2'
         )}
       >
-        <div className='flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md'>
+        <div className='flex size-5 shrink-0 items-center justify-center rounded-md'>
           <img
             src={logo}
             alt={t('Logo')}
-            className='size-full rounded-md object-cover'
+            className='size-full rounded-md object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.08] motion-safe:group-focus-visible:scale-[1.08]'
           />
         </div>
-        <span className='max-w-[12rem] truncate'>{name}</span>
+        <span className='max-w-[12rem] truncate'>{BRAND_NAME}</span>
       </Link>
     )
   }
@@ -85,16 +84,18 @@ export function SystemBrand(props: SystemBrandProps) {
           className='hover:text-sidebar-foreground active:text-sidebar-foreground cursor-default hover:bg-transparent active:bg-transparent'
           render={<div />}
         >
-          <div className='flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg'>
+          <div className='flex aspect-square size-8 items-center justify-center rounded-lg'>
             <img
               src={logo}
               alt={t('Logo')}
-              className='size-full rounded-lg object-cover'
+              className='size-full rounded-lg object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-[1.08]'
             />
           </div>
           <div className='grid flex-1 text-start text-sm leading-tight group-data-[collapsible=icon]:hidden'>
-            <span className='truncate font-semibold'>{name}</span>
-            <span className='truncate text-xs'>{version}</span>
+            <span className='truncate font-semibold'>{BRAND_NAME}</span>
+            <span className='truncate text-xs'>
+              {BRAND_TAGLINE} · {name}
+            </span>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

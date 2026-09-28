@@ -22,6 +22,7 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
 import { installBuildMetadata } from '@/lib/build-metadata'
+import { BRAND_DISPLAY_NAME } from '@/lib/constants'
 import { applyFaviconToDom } from '@/lib/dom-utils'
 import '@/lib/dayjs'
 import { initializeFrontendCache } from '@/lib/frontend-cache'
@@ -67,20 +68,17 @@ const rootElement = document.querySelector<HTMLElement>('#root')
 if (!rootElement) {
   throw new Error('Root element not found')
 }
-// Set document.title and favicon from cached status, then refresh from network
+// Keep the local deployment title branded; refresh the favicon from status.
 ;(function initSystemBranding() {
   try {
     if (typeof window === 'undefined' || typeof document === 'undefined') return
-    const apply = (name: string) => {
-      document.title = name
-      const metaTitle = document.querySelector(
-        'meta[name="title"]'
-      ) as HTMLMetaElement | null
-      if (metaTitle) metaTitle.setAttribute('content', name)
-    }
+    document.title = BRAND_DISPLAY_NAME
+    const metaTitle = document.querySelector(
+      'meta[name="title"]'
+    ) as HTMLMetaElement | null
+    if (metaTitle) metaTitle.setAttribute('content', BRAND_DISPLAY_NAME)
     // Cache-first
     const cached = readCachedStatus()
-    if (cached?.system_name) apply(cached.system_name as string)
     if (cached?.logo) applyFaviconToDom(cached.logo as string)
 
     // Background refresh through the shared cache. This primes ['status']
@@ -90,7 +88,6 @@ if (!rootElement) {
     queryClient
       .ensureQueryData(statusQueryOptions)
       .then((s) => {
-        if (s?.system_name) apply(s.system_name as string)
         if (s?.logo) applyFaviconToDom(s.logo as string)
       })
       .catch(() => {

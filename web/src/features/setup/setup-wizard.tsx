@@ -37,6 +37,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSystemConfig } from '@/hooks/use-system-config'
+import { BRAND_DISPLAY_NAME, BRAND_LOCKUP, DEFAULT_LOGO } from '@/lib/constants'
 import { handleServerError } from '@/lib/handle-server-error'
 import { accountPasswordSchema } from '@/lib/password-policy'
 import { requireServerSuccess } from '@/lib/server-error-message'
@@ -80,7 +81,7 @@ export function SetupWizard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { systemName, logo, loading: systemConfigLoading } = useSystemConfig()
+  const { logo, loading: systemConfigLoading } = useSystemConfig()
 
   const [currentStep, setCurrentStep] = useState(0)
   const [setupStatus, setSetupStatus] = useState<SetupStatus | undefined>()
@@ -289,14 +290,20 @@ export function SetupWizard() {
       </div>
       <div className='container mx-auto flex max-w-5xl flex-col gap-8 px-4 sm:px-6'>
         <div className='flex flex-col items-center gap-3'>
-          <div className='relative h-12 w-12'>
+          <div
+            className={
+              logo === DEFAULT_LOGO
+                ? 'relative h-36 w-24'
+                : 'relative h-12 w-12'
+            }
+          >
             {systemConfigLoading ? (
               <Skeleton className='absolute inset-0 rounded-full' />
             ) : (
               <img
-                src={logo}
+                src={logo === DEFAULT_LOGO ? BRAND_LOCKUP : logo}
                 alt={t('System logo')}
-                className='h-12 w-12 rounded-full object-cover shadow-sm'
+                className='size-full rounded-lg object-contain shadow-sm motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-[1.08]'
               />
             )}
           </div>
@@ -304,7 +311,7 @@ export function SetupWizard() {
             <Skeleton className='h-7 w-40' />
           ) : (
             <h1 className='text-2xl font-semibold tracking-tight'>
-              {t('Initialize')} {systemName}
+              {t('Initialize')} {BRAND_DISPLAY_NAME}
             </h1>
           )}
           <p className='text-muted-foreground text-center text-sm sm:text-base'>
