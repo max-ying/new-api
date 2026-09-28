@@ -1,0 +1,46 @@
+name: new-api-build
+
+services:
+  new-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${NEW_API_VERSION:-dev}
+        GIT_COMMIT: ${GIT_COMMIT:-}
+        BUILD_DATE: ${BUILD_DATE:-}
+        SOURCE_URL: ${SOURCE_URL:-https://github.com/max-ying/new-api.git}
+        BUN_IMAGE: ${BUN_IMAGE:-docker.m.daocloud.io/oven/bun:1.4.0@sha256:5ff609364c049b54eb0ff560ec96319729a972078ef2c755d758f0c6ef89c2d6}
+        NPM_CONFIG_REGISTRY: ${NPM_CONFIG_REGISTRY:-https://registry.npmmirror.com}
+        GO_IMAGE: ${GO_IMAGE:-docker.m.daocloud.io/library/golang:1.26.1-alpine@sha256:2389ebfa5b7f43eeafbd6be0c3700cc46690ef842ad962f6c5bd6be49ed82039}
+        GOPROXY: ${GO_PROXY:-https://goproxy.cn,direct}
+        RUNTIME_IMAGE: ${RUNTIME_IMAGE:-docker.m.daocloud.io/library/debian:bookworm-slim@sha256:f06537653ac770703bc45b4b113475bd402f451e85223f0f2837acbf89ab020a}
+    image: ${NEW_API_IMAGE:-new-api}:${NEW_API_VERSION:-dev}
+    env_file:
+      - path: .env
+        required: false
+    container_name: new-api-build
+    restart: unless-stopped
+    command: --log-dir /app/logs
+    ports:
+      - "${NEW_API_BIND:-127.0.0.1}:${NEW_API_PORT:-3001}:3000"
+    volumes:
+      - new-api-data:/data
+      - new-api-logs:/app/logs
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  new-api-data:
+  new-api-logs:

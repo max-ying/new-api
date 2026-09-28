@@ -6,7 +6,12 @@
 upload
 *.exe
 *.db
-build
+build/*
+!build/compose.yaml
+!build/.env.example
+!build/deploy.sh
+!build/set-version.sh
+!build/README.md
 *.db-journal
 *.db-shm
 *.db-wal
